@@ -40,11 +40,18 @@ PROGRAM clover_leaf
 
   USE clover_module
 
+#ifdef USE_CALI
+  use caliper_mod
+#endif
+
   IMPLICIT NONE
 
 
   CALL clover_init_comms()
 
+#ifdef USE_CALI
+  call cali_init()
+#endif
 
   IF(parallel%boss)THEN
     WRITE(*,*)
@@ -62,8 +69,16 @@ PROGRAM clover_leaf
 
   CALL initialise
 
+
+!#ifdef USE_CALI
+!call cali_begin_region('hydro')
+!#endif
   CALL hydro
-  
+!#ifdef USE_CALI
+!call cali_end_region('hydro')
+!call cali_flush(CALI_FLUSH_CLEAR_BUFFERS)   
+!call cali_flush(1)
+!#endif
   ! Deallocate everything
   
 END PROGRAM clover_leaf

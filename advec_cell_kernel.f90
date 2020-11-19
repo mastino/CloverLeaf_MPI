@@ -22,6 +22,10 @@
 
 MODULE advec_cell_kernel_module
 
+#ifdef USE_CALI
+use caliper_mod
+#endif
+
 CONTAINS
 
   SUBROUTINE advec_cell_kernel(x_min,       &
@@ -78,6 +82,10 @@ CONTAINS
     REAL(KIND=8) :: one_by_six=1.0_8/6.0_8
     REAL(KIND=8) :: pre_mass_s,post_mass_s,post_ener_s,advec_vol_s
 
+
+#ifdef USE_CALI
+call cali_begin_region('cell_kernel')
+#endif
 
 
     IF(dir.EQ.g_xdir) THEN
@@ -259,6 +267,9 @@ CONTAINS
 
     ENDIF
 
+#ifdef USE_CALI
+call cali_end_region('cell_kernel')
+#endif
 
 
   END SUBROUTINE advec_cell_kernel

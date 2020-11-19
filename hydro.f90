@@ -31,6 +31,10 @@ SUBROUTINE hydro
     USE advection_module
     USE reset_field_module
 
+#ifdef USE_CALI
+  use caliper_mod
+#endif
+
     IMPLICIT NONE
 
     INTEGER         :: loc(1)
@@ -42,6 +46,11 @@ SUBROUTINE hydro
     REAL(KIND=8)    :: kernel_total,totals(parallel%max_task)
 
     timerstart = timer()
+
+
+#ifdef USE_CALI
+call cali_begin_region('hydro')
+#endif
 
     DO
 
@@ -184,7 +193,7 @@ SUBROUTINE hydro
                 ENDIF
             ENDIF
 
-            CALL clover_finalize
+            !CALL clover_finalize
 
             EXIT
 
@@ -207,5 +216,11 @@ SUBROUTINE hydro
         END IF
 
     END DO
+
+#ifdef USE_CALI
+    call cali_end_region('hydro')
+    call cali_flush(CALI_FLUSH_CLEAR_BUFFERS)
+#endif
+    CALL clover_finalize
 
 END SUBROUTINE hydro
